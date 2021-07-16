@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Feb  2 03:20:20 2021
-
-@author: hanlin
-"""
-
-
 
 from __future__ import print_function
 import time
@@ -243,19 +236,3 @@ def alias_draw(J, q):
     
     
     
-    
-    
-
-grf = nx.generators.trees.random_tree(50)
-#graph = Graph(grf)
-
-n2v = Node2vec_onlywalk(graph = grf, path_length=10, num_paths=50, p=1e6, q=1.0, stop_prob = 0.0, with_freq_mat = True)
-
-
-
-
-
-
-
-
-
