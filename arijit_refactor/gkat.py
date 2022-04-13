@@ -63,7 +63,7 @@ class GKATClassifier(nn.Module):
                 num_heads, 
                 n_classes, 
                 feat_drop_= 0.0,
-                attn_drop_=0.0,
+                attn_drop_= 0.0,
                 agg_activation = F.elu,
                 normalize = True
                 ):
@@ -78,12 +78,17 @@ class GKATClassifier(nn.Module):
         self.agg_activation = agg_activation
         self.normalize = normalize
 
-
         self.layers = nn.ModuleList([
-            nn.ModuleList([GKATLayer(self.in_dim, self.hidden_dim[0], feat_drop = self.feat_drop, attn_drop = self.attn_drop, agg_activation=self.agg_activation) 
-                                    for _ in range(num_heads)]),
-            nn.ModuleList([GKATLayer(hidden_dim[0] * num_heads, hidden_dim[-1], feat_drop = self.feat_drop, attn_drop = self.attn_drop, agg_activation=self.agg_activation)) 
-                        for _ in range(1)])
+            nn.ModuleList([
+                    GKATLayer(self.in_dim, self.hidden_dim[0], \
+                        feat_drop = self.feat_drop, attn_drop = self.attn_drop, agg_activation=self.agg_activation) 
+                                for _ in range(self.num_heads)]
+                                    ),
+            nn.ModuleList([
+                    GKATLayer(self.hidden_dim[0] * self.num_heads, self.hidden_dim[-1], \
+                        feat_drop = self.feat_drop, attn_drop = self.attn_drop, agg_activation=self.agg_activation) 
+                            for _ in range(1)]
+                        )
         ])
 
         self.classify = nn.Linear(hidden_dim[-1] * 1, n_classes) #why this times 1
