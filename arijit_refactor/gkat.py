@@ -277,7 +277,7 @@ class GKATMultiHeadClassifier(nn.Module):
         )
 
         self.classify = nn.Linear(
-            hidden_dim[-1] * 1, n_classes
+            self.hidden_dim[-1] * 1, n_classes
         )  # why this times 1
         self.softmax = nn.Softmax(dim=1)  # where is this used
 
