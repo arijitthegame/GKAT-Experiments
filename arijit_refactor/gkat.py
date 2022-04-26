@@ -14,7 +14,6 @@ class GKATLayer(nn.Module):
         out_dim,
         feat_drop=0.0,
         attn_drop=0.0,
-        alpha=0.2,
         agg_activation=F.elu,
     ):
         super(GKATLayer, self).__init__()
@@ -23,7 +22,6 @@ class GKATLayer(nn.Module):
         self.out_dim = out_dim
         self.feat_drop = feat_drop
         self.attn_drop = attn_drop
-        self.alpha = alpha  # where is this used
         self.agg_activation = agg_activation
 
         self.feat_dropout = nn.Dropout(self.feat_drop)
@@ -33,11 +31,10 @@ class GKATLayer(nn.Module):
         self.fc_K = nn.Linear(self.in_dim, self.out_dim, bias=False)
         self.fc_V = nn.Linear(self.in_dim, self.out_dim, bias=False)
 
-        self.softmax = nn.Softmax(dim=1)  # where is this used?
 
     def forward(
-        self, feat, bg, counting_attn
-    ):  # where is bg used in this forward
+        self, feat, counting_attn
+    ):  
         h = self.feat_dropout(feat)
 
         Q = self.fc_Q(h).reshape((h.shape[0], -1))
@@ -116,9 +113,9 @@ class GKATClassifier(nn.Module):
         )
 
         self.classify = nn.Linear(
-            hidden_dim[-1] * 1, n_classes
-        )  # why this times 1
-        self.softmax = nn.Softmax(dim=1)  # where is this used
+            hidden_dim[-1], n_classes
+        )  
+ 
 
     def forward(self, feats, counting_attn):
 
@@ -165,8 +162,8 @@ class GKATMultiHead(nn.Module):
         self.scale_factor = self.dim_head**-0.5
 
     def forward(
-        self, feat, counting_attn, bg=None
-    ):  # where is bg used in this forward
+        self, feat, counting_attn
+    ):  
         x = self.feat_dropout(feat)
         if x.dim() == 2:
             x = x.unsqueeze(0)
@@ -277,11 +274,11 @@ class GKATMultiHeadClassifier(nn.Module):
         )
 
         self.classify = nn.Linear(
-            self.hidden_dim[-1] * 1, n_classes
-        )  # why this times 1
-        self.softmax = nn.Softmax(dim=1)  # where is this used
+            self.hidden_dim[-1], n_classes
+        )  
 
-    def forward(self, feats, counting_attn, bg=None):
+
+    def forward(self, feats, counting_attn):
 
         if self.normalize:
             if feats.dim() == 2:
